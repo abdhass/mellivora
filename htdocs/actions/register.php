@@ -16,6 +16,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         $email = $_POST[md5(Config::get('MELLIVORA_CONFIG_SITE_NAME').'USR')];
+        $cleanEmail = filter_var($email,FILTER_SANITIZE_EMAIL);
+
+        // reject the user input if email contains bad characters
+        if ($email != $cleanEmail){
+            message_error("Invalid email address. Please check your email address again.");
+        }
+
+        // reject the user input if email is not valid
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            message_error("Email address is not valid. Please go back and try again.");
+        }
 
         if (Config::get('MELLIVORA_CONFIG_ACCOUNTS_EMAIL_PASSWORD_ON_SIGNUP')) {
             $password = generate_random_string(12);
